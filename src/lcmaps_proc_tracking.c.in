@@ -178,11 +178,11 @@ static void handle_child(int p2c[], int c2p[], pid_t pid, pid_t ppid, const char
     close(p2c[1]);
     close(c2p[0]);
     if (dup2(p2c[0], 0) == -1) {
-      lcmaps_log(0, "%s: Failed to dup file descriptor (%d: %s)\n", errno, strerror(errno));
+      lcmaps_log(0, "%s: Failed to dup file descriptor (%d: %s)\n", logstr, errno, strerror(errno));
       exit(errno);
     }
     if (dup2(c2p[1], 1) == -1) {
-      lcmaps_log(0, "%s: Failed to dup file descriptor (%d: %s)\n", errno, strerror(errno));
+      lcmaps_log(0, "%s: Failed to dup file descriptor (%d: %s)\n", logstr, errno, strerror(errno));
       exit(errno);
     }
     close(p2c[0]);
@@ -320,11 +320,11 @@ int plugin_run(int argc, lcmaps_argument_t *argv)
   }
 
   if (pipe(p2c) == -1) {
-    lcmaps_log(0, "%s: Pipe creation failure (%d: %s)\n", errno, strerror(errno));
+    lcmaps_log(0, "%s: Pipe creation failure (%d: %s)\n", logstr, errno, strerror(errno));
     goto process_tracking_pipe_failure;
   }
   if (pipe(c2p) == -1) {
-    lcmaps_log(0, "%s: Pipe creation failure (%d: %s)\n", errno, strerror(errno));
+    lcmaps_log(0, "%s: Pipe creation failure (%d: %s)\n", logstr, errno, strerror(errno));
     goto process_tracking_pipe_failure;
   }
 
@@ -333,7 +333,7 @@ int plugin_run(int argc, lcmaps_argument_t *argv)
 
   pid = fork();
   if (pid == -1) {
-    lcmaps_log(0, "%s: Fork failure (%d: %s)\n", errno, strerror(errno));
+    lcmaps_log(0, "%s: Fork failure (%d: %s)\n", logstr, errno, strerror(errno));
     goto process_tracking_fork_failure;
   } else if (pid == 0) {
     handle_child(p2c, c2p, my_pid, ppid, uid_str, dn, vo, fqan);
