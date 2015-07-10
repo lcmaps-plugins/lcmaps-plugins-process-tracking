@@ -1,6 +1,6 @@
 Summary: Process tracking plugin for the LCMAPS authorization framework
 Name: lcmaps-plugins-process-tracking
-Version: 0.2
+Version: 0.3
 Release: 1%{?dist}
 License: Public Domain
 Group: System Environment/Libraries
