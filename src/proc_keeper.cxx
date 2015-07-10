@@ -75,7 +75,7 @@ public:
         m_dead_utime(0),
         m_dead_stime(0)
     {
-        syslog(LOG_NOTICE, "glexec.mon[%d:%d]: Started, target uid %d\n", getpid(), watched2, watched);
+        //syslog(LOG_NOTICE, "glexec.mon[%d:%d]: Started, target uid %d", getpid(), watched2, watched);
     }
     int fork(pid_t, pid_t);
     void usage();

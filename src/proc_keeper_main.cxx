@@ -158,12 +158,12 @@ int main(int argc, char *argv[]) {
     openlog("process-tracking", LOG_PID|LOG_PERROR, LOG_DAEMON);
 
     // Input parsing and sanitation
-    if ((argc != 3) && (argc != 4)) {
-        syslog(LOG_ERR, "Usage: process-tracking <pid> <ppid> [<pool account filename>]\n");
+    if ((argc != 7) && (argc != 8)) {
+        syslog(LOG_ERR, "Usage: process-tracking <pid> <ppid> <uid> <DN> <VO> <FQAN> [<pool account filename>]\n");
         syslog(LOG_ERR, "Not enough arguments!\n");
         return 1;
     }
-    const char * pool_account_filename = (argc == 4) ? argv[3] : NULL;
+    const char * pool_account_filename = (argc == 8) ? argv[7] : NULL;
 
     pid_t pid_max = get_max_pid();
     errno = 0;
@@ -185,6 +185,15 @@ int main(int argc, char *argv[]) {
         syslog(LOG_ERR, "PID outside valid range [2, %d]: %ld", pid_max, ppid);
         return 1;
     }
+
+    // Record the new information in the log.  This is done for compatibility with the older
+    // glexec-tracking plugin
+    pid_t mypid = getpid();
+    syslog(LOG_NOTICE, "glexec.mon[%d#%ld]: Started, target pid %ld", mypid, ppid, pid);
+    syslog(LOG_NOTICE, "glexec.mon[%d#%ld]: New uid %s", mypid, ppid, argv[3]);
+    syslog(LOG_NOTICE, "glexec.mon[%d#%ld]: Used DN \"%s\"", mypid, ppid, argv[4]);
+    syslog(LOG_NOTICE, "glexec.mon[%d#%ld]: Used VO \"%s\"", mypid, ppid, argv[5]);
+    syslog(LOG_NOTICE, "glexec.mon[%d#%ld]: Used FQAN \"%s\"", mypid, ppid, argv[6]);
 
     // Close out unused fds.  LCMAPS shouldn't leak FDs to us, but just in
     // case...
